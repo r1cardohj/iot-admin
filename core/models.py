@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 # Create your models here.
 DATA_TYPE = {
@@ -24,7 +25,7 @@ class Property(models.Model):
     required = models.BooleanField()
     specs = models.JSONField()
     created_dt = models.DateTimeField(auto_now_add=True)
-    updated_dt = models.DateTimeField(auto_now=True)
+    updated_dt = models.DateTimeField(auto_now=True, null=True)
 
     def __str__(self):
         return f"{self.name}(self.identifier)"
@@ -40,7 +41,7 @@ class Action(models.Model):
     description = models.CharField(max_length=250)
     required = models.BooleanField()
     created_dt = models.DateTimeField(auto_now_add=True)
-    updated_dt = models.DateTimeField(auto_now=True)
+    updated_dt = models.DateTimeField(auto_now=True, null=True)
 
     def __str__(self):
         return f"{self.name}(self.identifier)"
@@ -53,7 +54,7 @@ class ActionData(models.Model):
     data_type = models.CharField(max_length=8, choices=DATA_TYPE)
     specs = models.JSONField()
     created_dt = models.DateTimeField(auto_now_add=True)
-    updated_dt = models.DateTimeField(auto_now=True)
+    updated_dt = models.DateTimeField(auto_now=True, null=True)
 
     def __str__(self):
         return f"{self.name}(self.identifier)"
@@ -115,7 +116,7 @@ class Product(models.Model):
     identifier = models.CharField(max_length=40, unique=True)
     name = models.CharField(max_length=40)
     schema = models.ForeignKey(Schema, on_delete=models.CASCADE)
-    product_type = models.CharField(max_length=10, choices=PRODUCT_TYPE)
+    product_type = models.CharField(max_length=18, choices=PRODUCT_TYPE)
     created_dt = models.DateTimeField(auto_now_add=True)
     updated_dt = models.DateTimeField(auto_now=True)
 
@@ -167,6 +168,6 @@ class DeviceShadow(models.Model):
     creatd_dt = models.DateTimeField(auto_now_add=True)
     online = models.BooleanField(default=False)
     last_connected_at = models.DateTimeField()
-    lock_status = models.CharField(max_length=5, choices=LOCK)
+    lock_status = models.CharField(max_length=6, choices=LOCK)
     last_updated_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
