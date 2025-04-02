@@ -168,5 +168,5 @@ class DeviceShadow(models.Model):
     online = models.BooleanField(default=False)
     last_connected_at = models.DateTimeField()
     lock_status = models.CharField(max_length=5, choices=LOCK)
-    last_updated_by = models.ForeignKey(User)
+    last_updated_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
