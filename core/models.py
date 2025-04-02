@@ -162,7 +162,7 @@ class DeviceShadow(models.Model):
     desired_state = models.JSONField()
     reported_state = models.JSONField()
 
-    version = models.IntegerField(defautl=0)
+    version = models.IntegerField(default=0)
     last_updated_dt = models.DateTimeField(auto_now=True)
     creatd_dt = models.DateTimeField(auto_now_add=True)
     online = models.BooleanField(default=False)
