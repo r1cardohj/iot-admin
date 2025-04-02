@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 DATA_TYPE = {
@@ -22,6 +23,11 @@ class Property(models.Model):
                                  default=DATA_TYPE['TEXT'])
     required = models.BooleanField()
     specs = models.JSONField()
+    created_dt = models.DateTimeField(auto_now_add=True)
+    updated_dt = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.name}(self.identifier)"
 
 
 class Action(models.Model):
@@ -33,6 +39,11 @@ class Action(models.Model):
     name = models.CharField(max_length=40)
     description = models.CharField(max_length=250)
     required = models.BooleanField()
+    created_dt = models.DateTimeField(auto_now_add=True)
+    updated_dt = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.name}(self.identifier)"
 
 
 class ActionData(models.Model):
@@ -41,6 +52,11 @@ class ActionData(models.Model):
     action = models.ForeignKey(Action, on_delete=models.CASCADE)
     data_type = models.CharField(max_length=8, choices=DATA_TYPE)
     specs = models.JSONField()
+    created_dt = models.DateTimeField(auto_now_add=True)
+    updated_dt = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.name}(self.identifier)"
 
 
 class Event(models.Model):
@@ -52,6 +68,12 @@ class Event(models.Model):
     identifier = models.CharField(max_length=40, unique=True)
     name = models.CharField(max_length=40)
 
+    created_dt = models.DateTimeField(auto_now_add=True)
+    updated_dt = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.name}(self.identifier)"
+
 
 class EventData(models.Model):
     identifier = models.CharField(max_length=40)
@@ -59,7 +81,11 @@ class EventData(models.Model):
     data_type = models.CharField(max_length=8, choices=DATA_TYPE)
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     specs = models.JSONField()
+    created_dt = models.DateTimeField(auto_now_add=True)
+    updated_dt = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return f"{self.name}(self.identifier)"
 
 class Schema(models.Model):
     """ a basic device class in iot platform,
@@ -72,4 +98,75 @@ class Schema(models.Model):
     events = models.ManyToManyField(Event)
     actions = models.ManyToManyField(Action)
     version = models.CharField(max_length=10,default="0.0.1")
+    created_dt = models.DateTimeField(auto_now_add=True)
+    updated_dt = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.name}(self.identifier)"
+
+
+class Product(models.Model):
+    PRODUCT_TYPE = {
+        "GATEWAY_DEVICE": "gateway",
+        "GATEWAY_SUB_DEVICE": "sub",
+        "DIRECT_DEVICE": "direct"
+    }
+
+    identifier = models.CharField(max_length=40, unique=True)
+    name = models.CharField(max_length=40)
+    schema = models.ForeignKey(Schema, on_delete=models.CASCADE)
+    product_type = models.CharField(max_length=10, choices=PRODUCT_TYPE)
+    created_dt = models.DateTimeField(auto_now_add=True)
+    updated_dt = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.name}(self.identifier)"
+
+
+class Device(models.Model):
+    identifier = models.CharField(max_length=40, unique=True)
+    name = models.CharField(max_length=40)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+
+    # parent always gateway device
+    parent_device = models.ForeignKey('self',
+                                      on_delete=models.SET_NULL,
+                                      null=True,
+                                      blank=True,
+                                      related_name='children')
+
+    ip_addr = models.CharField(max_length=36, blank=True, null=True)
+    online = models.BooleanField(default=False)
+    port = models.CharField(max_length=5, blank=True, null=True)
+    location = models.JSONField()
+    description = models.TextField()
+    created_dt = models.DateTimeField(auto_now_add=True)
+    updated_dt = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.name}(self.identifier)"
+
+
+class DeviceShadow(models.Model):
+    """ a shadow about device, show some
+    real time information about device
+    """
+    LOCK = {
+        'LOCKED': 'locked',
+        'UNLOCK': 'unlock'
+    }
+    device = models.OneToOneField(Device,
+                                  on_delete=models.CASCADE,
+                                  related_name='shadow')
+    state = models.JSONField()
+    desired_state = models.JSONField()
+    reported_state = models.JSONField()
+
+    version = models.IntegerField(defautl=0)
+    last_updated_dt = models.DateTimeField(auto_now=True)
+    creatd_dt = models.DateTimeField(auto_now_add=True)
+    online = models.BooleanField(default=False)
+    last_connected_at = models.DateTimeField()
+    lock_status = models.CharField(max_length=5, choices=LOCK)
+    last_updated_by = models.ForeignKey(User)
 
