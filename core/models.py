@@ -1,6 +1,6 @@
+from decimal import MAX_EMAX
 from django.db import models
 from django.contrib.auth.models import User
-from django.utils import timezone
 
 # Create your models here.
 DATA_TYPE = {
@@ -171,3 +171,17 @@ class DeviceShadow(models.Model):
     lock_status = models.CharField(max_length=6, choices=LOCK)
     last_updated_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
+
+class Topic(models.Model):
+    """ the key of Pub/Sub model
+    """
+    identifier = models.CharField(max_length=40)
+    name = models.CharField(max_length=40)
+    product_pattern = models.CharField(max_length=100)
+    device_pattern = models.CharField(max_length=100)
+
+    created_dt = models.DateTimeField(auto_now_add=True)
+    updated_dt = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.name}(self.identifier)"
