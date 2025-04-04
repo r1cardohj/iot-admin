@@ -27,7 +27,7 @@ class Property(models.Model):
     updated_dt = models.DateTimeField(auto_now=True, null=True)
 
     def __str__(self):
-        return f"{self.name}(self.identifier)"
+        return f"{self.name}({self.identifier})"
 
 
 class Action(models.Model):
@@ -43,20 +43,20 @@ class Action(models.Model):
     updated_dt = models.DateTimeField(auto_now=True, null=True)
 
     def __str__(self):
-        return f"{self.name}(self.identifier)"
+        return f"{self.name}({self.identifier})"
 
 
 class ActionData(models.Model):
     identifier = models.CharField(max_length=40)
     name = models.CharField(max_length=40)
-    action = models.ForeignKey(Action, on_delete=models.CASCADE)
+    action = models.ForeignKey(Action, on_delete=models.CASCADE, related_name='data')
     data_type = models.CharField(max_length=8, choices=DATA_TYPE)
     specs = models.JSONField()
     created_dt = models.DateTimeField(auto_now_add=True)
     updated_dt = models.DateTimeField(auto_now=True, null=True)
 
     def __str__(self):
-        return f"{self.name}(self.identifier)"
+        return f"{self.name}{(self.identifier)}"
 
 
 class Event(models.Model):
@@ -72,20 +72,20 @@ class Event(models.Model):
     updated_dt = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.name}(self.identifier)"
+        return f"{self.name}{(self.identifier)}"
 
 
 class EventData(models.Model):
     identifier = models.CharField(max_length=40)
     name = models.CharField(max_length=40)
     data_type = models.CharField(max_length=8, choices=DATA_TYPE)
-    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='data')
     specs = models.JSONField()
     created_dt = models.DateTimeField(auto_now_add=True)
     updated_dt = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.name}(self.identifier)"
+        return f"{self.name}{(self.identifier)}"
 
 class Schema(models.Model):
     """ a basic device class in iot platform,
@@ -102,7 +102,7 @@ class Schema(models.Model):
     updated_dt = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.name}(self.identifier)"
+        return f"{self.name}{(self.identifier)}"
 
 
 class Product(models.Model):
@@ -120,7 +120,7 @@ class Product(models.Model):
     updated_dt = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.name}(self.identifier)"
+        return f"{self.name}{(self.identifier)}"
 
 
 class Device(models.Model):
@@ -144,7 +144,7 @@ class Device(models.Model):
     updated_dt = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.name}(self.identifier)"
+        return f"{self.name}{(self.identifier)}"
 
 
 class DeviceShadow(models.Model):
@@ -183,4 +183,4 @@ class Topic(models.Model):
     updated_dt = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.name}(self.identifier)"
+        return f"{self.name}{(self.identifier)}"
