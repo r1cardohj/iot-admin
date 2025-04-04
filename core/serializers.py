@@ -20,6 +20,7 @@ class ActionDataSerializer(serializers.ModelSerializer):
 
 
 class ActionSerializer(serializers.ModelSerializer):
+    data = ActionDataSerializer(read_only=True, many=True)
     class Meta:
         model = Action
         fields = '__all__'
@@ -32,6 +33,7 @@ class EventDataSerializer(serializers.ModelSerializer):
 
 
 class EventSerializer(serializers.ModelSerializer):
+    data = EventDataSerializer(read_only=True, many=True)
     class Meta:
         model = Event
         fields = '__all__'
