@@ -1,4 +1,3 @@
-from decimal import MAX_EMAX
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -165,7 +164,7 @@ class DeviceShadow(models.Model):
 
     version = models.IntegerField(default=0)
     last_updated_dt = models.DateTimeField(auto_now=True)
-    creatd_dt = models.DateTimeField(auto_now_add=True)
+    created_dt = models.DateTimeField(auto_now_add=True)
     online = models.BooleanField(default=False)
     last_connected_at = models.DateTimeField()
     lock_status = models.CharField(max_length=6, choices=LOCK)
